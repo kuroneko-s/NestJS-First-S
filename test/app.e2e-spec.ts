@@ -15,10 +15,24 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
+  describe('movie', () => {
+    it('/ (GET_getAll)', () => {
+      return request(app.getHttpServer()).get('/').expect(200).expect([]);
+    });
+
+    it('/ (POST_create)', () => {
+      return request(app.getHttpServer())
+        .post('/')
+        .expect(201)
+        .send({
+          title: 'test',
+          year: 2023,
+          genres: ['test'],
+        });
+    });
+
+    it('/ (DELETE_delete)', () => {
+      return request(app.getHttpServer());
+    });
   });
 });

@@ -8,38 +8,52 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { MovieService } from './movie.service';
+import { CreateMovieDTO } from './dto/create-movie.dto';
+import { UpdateMovieDTO } from './dto/update-movie.dto';
+import { Movie } from './entity/movie.entity';
 
 @Controller()
 export class MovieController {
+  constructor(private readonly movieService: MovieService) {}
+
   @Get('')
-  getAllMovie() {
-    return 'all movie';
+  getAllMovie(): Movie[] | [] {
+    // @Req() req, @Res() res => express에서 사용하는 방법
+    return this.movieService.getAll();
   }
 
   @Post()
-  create(@Body() data) {
-    console.log(data);
-    return `get data ${data}`;
+  create(@Body() movieData: CreateMovieDTO) {
+    return { movie: this.movieService.create(movieData) };
   }
 
   @Get('search')
   search(@Query('year') keyword: string) {
-    return `searching movie ${keyword}`;
+    return 's';
   }
 
   @Get(':id')
-  getOne(@Param('id') id: string) {
-    return `get id ${id}`;
+  getOne(@Param('id') movieId: number) {
+    console.log(movieId);
+    const movie = this.movieService.getOne(movieId);
+
+    return {
+      movie,
+    };
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return `delete id ${id}`;
+  remove(@Param('id') movieId: number) {
+    return {
+      result: this.movieService.delete(movieId),
+    };
   }
 
   @Patch(':id')
-  patch(@Param('id') id: string, @Body() data) {
-    console.log(data);
+  patch(@Param('id') id: number, @Body() data: UpdateMovieDTO) {
+    this.movieService.update(id, data);
+
     return {
       id: id,
       updatedData: data,
